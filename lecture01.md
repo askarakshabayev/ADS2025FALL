@@ -110,3 +110,56 @@ If your student ID is `09FSXX019`:
 - 12 Multiple Choice questions = 6 points
 - 2 Open questions = 3 points  
 - 2 Code questions = 3 points
+
+## Lecture 1 Details: Complexity and Memory
+
+### Greatest Common Divisor (GCD)
+
+**Simple solution and why we need more effective algorithms like Euclidean Algorithm**
+
+**Problem:** Find the largest positive integer that divides both numbers a and b.
+
+**Naive Approach:**
+- Check all numbers from min(a,b) down to 1
+- Time complexity: O(min(a,b))
+- Inefficient for large numbers
+
+**Example:** 
+- For small numbers like GCD(12, 18): works fine, checks 12 numbers maximum
+- For large prime numbers like GCD(1000000007, 1000000009): would need to check ~1 billion numbers!
+- With large numbers, this approach will take an extremely long time to calculate
+
+**Euclidean Algorithm - The Elegant Solution:**
+- GCD(a, b) = GCD(b, a mod b)  if b ≠ 0
+- GCD(a, 0) = a
+
+**Implementation:**
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+int gcd(int a, int b) {
+    for (int i = min(a, b); i >= 1; --i) {
+        if (a % i == 0 && b % i == 0) {
+            return i;
+        }
+    }
+    return 1;
+}
+
+int gcd2(int a, int b) {
+    if (b == 0) {
+        return a;
+    }
+    return gcd2(b, a % b);
+}
+
+int main() {
+    int a, b;
+    cin >> a >> b;
+    cout << gcd2(a, b) << endl;
+    return 0;
+}
+```
