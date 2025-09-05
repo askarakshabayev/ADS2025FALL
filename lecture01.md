@@ -178,3 +178,65 @@ int main() {
     return 0;
 }
 ```
+
+### Binary Exponentiation (Binpow)
+
+**Problem:** Calculate a^n efficiently
+
+**Naive Approach:**
+- Multiply a by itself n times
+- Time complexity: O(n)
+- Inefficient for large exponents
+
+**Binary Exponentiation - The Efficient Solution:**
+- Based on the property: a^n = (a^(n/2))^2 if n is even
+- If n is odd: a^n = a * a^(n-1)
+- Time complexity: O(log n)
+
+**Algorithm:**
+1. If n = 0, return 1
+2. If n is even: result = (a^(n/2))^2
+3. If n is odd: result = a * a^(n-1)
+4. Use recursion or iteration
+
+**Example:** Calculate 2^10
+- 2^10 = (2^5)^2 = (2 * 2^4)^2 = (2 * (2^2)^2)^2 = (2 * 4^2)^2 = (2 * 16)^2 = 32^2 = 1024
+- Only 4 multiplications instead of 10!
+
+**Implementation:**
+
+```cpp
+// Recursive version
+long long binpow(long long a, long long n) {
+    if (n == 0)
+        return 1;
+    if (n % 2 == 0) {
+        long long half = binpow(a, n / 2);
+        return half * half;
+    } else {
+        return a * binpow(a, n - 1);
+    }
+}
+
+// Iterative version
+long long binpow_iter(long long a, long long n) {
+    long long result = 1;
+    while (n > 0) {
+        if (n % 2 == 1) {
+            result *= a;
+        }
+        a *= a;
+        n /= 2;
+    }
+    return result;
+}
+
+// Example usage
+int main() {
+    long long base, exp;
+    cin >> base >> exp;
+    cout << "Result: " << binpow(base, exp) << endl;
+    cout << "Result (iterative): " << binpow_iter(base, exp) << endl;
+    return 0;
+}
+```
