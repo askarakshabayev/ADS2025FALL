@@ -189,18 +189,18 @@ int main() {
 - Inefficient for large exponents
 
 **Binary Exponentiation - The Efficient Solution:**
-- Based on the property: a^n = (a^(n/2))^2 if n is even
-- If n is odd: a^n = a * a^(n-1)
+- Based on the property: a<sup>n</sup> = (a<sup>n/2</sup>)<sup>2</sup> if n is even
+- If n is odd: a<sup>n</sup> = a × a<sup>n-1</sup>
 - Time complexity: O(log n)
 
 **Algorithm:**
 1. If n = 0, return 1
-2. If n is even: result = (a^(n/2))^2
-3. If n is odd: result = a * a^(n-1)
+2. If n is even: result = (a<sup>n/2</sup>)<sup>2</sup>
+3. If n is odd: result = a × a<sup>n-1</sup>
 4. Use recursion or iteration
 
-**Example:** Calculate 2^10
-- 2^10 = (2^5)^2 = (2 * 2^4)^2 = (2 * (2^2)^2)^2 = (2 * 4^2)^2 = (2 * 16)^2 = 32^2 = 1024
+**Example:** Calculate 2<sup>10</sup>
+- 2<sup>10</sup> = (2<sup>5</sup>)<sup>2</sup> = (2 × 2<sup>4</sup>)<sup>2</sup> = (2 × (2<sup>2</sup>)<sup>2</sup>)<sup>2</sup> = (2 × 4<sup>2</sup>)<sup>2</sup> = (2 × 16)<sup>2</sup> = 32<sup>2</sup> = 1024
 - Only 4 multiplications instead of 10!
 
 **Implementation:**
