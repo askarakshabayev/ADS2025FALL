@@ -3,6 +3,25 @@
 ## Course Overview
 - Syllabus, covered topics, laboratory works
 - Midterm, endterm, final examinations
+- Ejudge.kz system, github, defence rules
+- Labs - practice lessons to help solving labs
+
+## Assessment Structure
+
+### Laboratory Works
+- Each lab = 1 point
+- 12 labs total
+
+### Quizzes
+- 4 quizzes throughout the semester
+- Each quiz = 12 points
+- Schedule: weeks 4, 8, 12, 16
+- One quiz will be a contest format
+
+**Quiz Format** *(Not finalized):*
+- 12 Multiple Choice questions = 6 points
+- 2 Open questions = 3 points  
+- 2 Code questions = 3 points
 
 ## Course Topics by Lecture
 
