@@ -545,6 +545,58 @@ class Stack {
 };
 ```
 
+**Simple Problem: Basic Parentheses Balance**
+Check if only `()` brackets are properly balanced.
+
+**Try solving without stack first:**
+
+```cpp
+#include <iostream>
+using namespace std;
+
+// Simple counter approach - works only for () brackets
+bool simple_balance(string s) {
+    int counter = 0;
+    
+    for (int i = 0; i < s.size(); i++) {
+        if (s[i] == '(') {
+            counter++;
+        } else if (s[i] == ')') {
+            counter--;
+            // If counter goes negative, we have ')' before '('
+            if (counter < 0) {
+                return false;
+            }
+        }
+    }
+    
+    // Should end with counter = 0
+    return (counter == 0);
+}
+
+int main() {
+    string s;
+    cin >> s;
+    if (simple_balance(s))
+        cout << "YES";
+    else
+        cout << "NO";
+    return 0;
+}
+```
+
+**Examples:**
+- "()" → True
+- "(())" → True  
+- "(((" → False
+- ")))" → False
+- "()(" → False
+
+**Why this approach fails for multiple bracket types?**
+- Counter can't distinguish between different bracket types
+- "(]" would incorrectly return true with counter approach
+- We need to remember which opening bracket we saw
+
 **Classic Problem: Balanced Brackets**
 Check if brackets are properly balanced: (), [], {}
 
