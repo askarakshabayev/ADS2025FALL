@@ -269,3 +269,104 @@ int main() {
    - If is_prime[i] is true:
      - Mark all multiples of i (starting from i²) as false
 4. Remaining true values are primes
+
+### Prime Factorization
+
+**Prime factorization** is the process of breaking a number into a product of prime numbers.
+
+**Examples:**
+- 60 = 2 × 2 × 3 × 5
+  - Explanation: 60 ÷ 2 = 30 → ÷ 2 = 15 → ÷ 3 = 5 → prime.
+- 210 = 2 × 3 × 5 × 7
+  - Explanation: Sequentially divide by primes until 1.
+
+**Basic Implementation:**
+
+```cpp
+#include <iostream>
+using namespace std;
+
+void primeFactorization(int n) {
+    for (int i = 2; i * i <= n; i++) {
+        while (n % i == 0) {
+            cout << i << " ";
+            n /= i;
+        }
+    }
+    if (n > 1) cout << n; // remaining prime
+    cout << endl;
+}
+
+int main() {
+    int num;
+    cout << "Enter a number: ";
+    cin >> num;
+    cout << "Prime factors: ";
+    primeFactorization(num);
+    return 0;
+}
+```
+
+**Worst case:** O(√n) (trial division).
+
+**Faster methods:** Sieve of Eratosthenes + precomputed primes
+
+```cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+// Generate primes up to limit using Sieve of Eratosthenes
+vector<int> sieve(int limit) {
+    vector<bool> isPrime(limit + 1, true);
+    vector<int> primes;
+
+    isPrime[0] = isPrime[1] = false;
+
+    for (int i = 2; i * i <= limit; i++) {
+        if (isPrime[i]) {
+            for (int j = i * i; j <= limit; j += i) {
+                isPrime[j] = false;
+            }
+        }
+    }
+
+    for (int i = 2; i <= limit; i++) {
+        if (isPrime[i]) primes.push_back(i);
+    }
+    return primes;
+}
+
+// Prime factorization using precomputed primes
+void primeFactorization(int n, const vector<int>& primes) {
+    int temp = n;
+    for (int p : primes) {
+        if (p * p > n) break; // stop when p > sqrt(n)
+        while (n % p == 0) {
+            cout << p << " ";
+            n /= p;
+        }
+    }
+    if (n > 1) cout << n; // remaining prime factor
+    cout << endl;
+}
+
+int main() {
+    int num;
+    cout << "Enter a number: ";
+    cin >> num;
+
+    // Precompute primes up to sqrt(num)
+    int limit = (int)(sqrt(num)) + 1;
+    vector<int> primes = sieve(limit);
+
+    cout << "Prime factors of " << num << ": ";
+    primeFactorization(num, primes);
+
+    return 0;
+}
+```
+
+**Efficiency:**
+- Sieve: O(n log log n) (once).
+- Factorization: O(π(√n)), where π(x) is number of primes ≤ √n (much fewer than √n divisions).
