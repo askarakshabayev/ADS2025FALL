@@ -240,3 +240,32 @@ int main() {
     return 0;
 }
 ```
+
+### Prime Numbers - Sieve of Eratosthenes
+
+**Problem:** Find all prime numbers up to n efficiently.
+
+**Naive Approach:**
+- Check each number for primality individually  
+- Time complexity: O(n√n)
+
+**Sieve of Eratosthenes - The Ancient Optimization:**
+
+**Example:** Finding primes up to 30
+1. Start with [2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30]
+2. Cross out multiples of 2: [2,3,5,7,9,11,13,15,17,19,21,23,25,27,29]  
+3. Cross out multiples of 3: [2,3,5,7,11,13,17,19,23,25,29]
+4. Continue...
+5. Result: [2,3,5,7,11,13,17,19,23,29]
+
+**Complexity:**
+- Time Complexity: O(n log log n) - much better than naive approach!
+- Space Complexity: O(n)
+
+**Algorithm:**
+1. Create boolean array is_prime[0..n], initialize all as true
+2. Set is_prime[0] = is_prime[1] = false  
+3. For each number i from 2 to √n:
+   - If is_prime[i] is true:
+     - Mark all multiples of i (starting from i²) as false
+4. Remaining true values are primes
