@@ -370,3 +370,58 @@ int main() {
 **Efficiency:**
 - Sieve: O(n log log n) (once).
 - Factorization: O(π(√n)), where π(x) is number of primes ≤ √n (much fewer than √n divisions).
+
+## Time Complexity and Memory
+
+**Why complexity matters:**
+- Sorting 10 numbers → both good and bad algorithms finish instantly.
+- Sorting 10 million numbers → slow algorithms take hours, fast ones finish in seconds.
+- We use complexity analysis to predict how runtime and memory grow as n increases.
+
+**Big-O** describes the upper bound on the growth rate — how fast runtime or memory usage can grow in the worst case.
+
+**Key principles:**
+- Ignore constant factors (doesn't matter if it's 2n or 5n, it's still O(n))
+- Ignore less significant terms (e.g., n² + n → O(n²) because n² dominates for large n)
+
+### Common Time Complexities:
+
+| Complexity | Name | Example |
+|------------|------|---------|
+| O(1) | Constant | Access array element |
+| O(log n) | Logarithmic | Binary search |
+| O(n) | Linear | Loop over array |
+| O(n log n) | Linearithmic | Merge sort, quicksort average |
+| O(n²) | Quadratic | Nested loops |
+| O(2ⁿ) | Exponential | Naive Fibonacci recursion |
+| O(n!) | Factorial | Traveling Salesman brute force |
+
+**Example of O(2ⁿ) - Very inefficient:**
+```cpp
+int fib(int n) {
+    if (n <= 1) return n;
+    return fib(n - 1) + fib(n - 2); // Very slow for large n
+}
+```
+
+### Space (Memory) Complexity
+
+Memory complexity measures extra memory your algorithm needs beyond the input.
+
+- **O(1)** → constant extra space (variables, counters)
+- **O(n)** → needs memory proportional to n (arrays, hashmaps)
+- **O(n²)** → large 2D matrices, graph adjacency matrices
+
+### Practical Takeaways
+
+- **Time complexity** tells you how fast runtime grows.
+- **Space complexity** tells you how much extra memory grows.
+- Use Big-O for worst-case analysis, but know there's also:
+  - **Big-Θ (Theta)** → tight bound (exact growth rate)
+  - **Big-Ω (Omega)** → best case bound.
+
+**For competitive programming and large-scale apps, aim for:**
+- Sorting: O(n log n)
+- Searching: O(log n) or better
+- Graph: BFS/DFS O(V+E)
+- Precomputation (like a sieve) can trade memory for speed.
