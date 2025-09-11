@@ -54,6 +54,53 @@ class Stack {
     }
 };
 
+class Queue {
+    public:
+
+    Node* front;
+    Node* rear;
+    Queue() {
+        front = NULL;
+        rear = NULL;
+    }
+
+    void push(int val) {
+        Node* newNode = new Node(val);
+        if (rear == NULL) {
+            front = rear = newNode;
+            return;
+        }
+        rear->next = newNode;
+        rear = newNode;
+    }
+    void pop() {
+        if (front == NULL) 
+            return;
+        Node* temp = front;
+        front = front->next;
+        if (front == NULL) 
+            rear = NULL;
+        delete temp;
+    }
+    int peek() {
+        if (front == NULL) 
+            return -1; // or throw an exception
+        return front->data;
+    }
+    int empty() {   
+        return front == NULL;
+    }
+    int size() {
+        int count = 0;
+        Node* current = front;
+        while (current != NULL) {
+            count++;
+            current = current->next;
+        }
+        return count;
+    }
+
+};
 
 int main() {
     // stack<int> st;
