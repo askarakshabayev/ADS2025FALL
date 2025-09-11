@@ -4,4 +4,4 @@
 
 | Lecture | Topic | Notes |
 |---------|-------|-------|
-| 1 | Introduction and Basic Data Structures | [Lecture 1 Notes](./lecture01.md) |
+| 1-2 | Introduction and Basic Data Structures | [Lecture 1-2 Notes](./lecture01-02.md) |
