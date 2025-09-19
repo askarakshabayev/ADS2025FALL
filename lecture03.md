@@ -206,11 +206,24 @@ double maxRopeLength(vector<double>& ropes, int k) {
 }
 
 int main() {
-    vector<double> ropes = {8.02, 7.43, 4.57, 5.39};
-    int k = 11;
+    int n, k;
+    cin >> n >> k;
+    
+    vector<double> ropes(n);
+    for (int i = 0; i < n; i++) {
+        cin >> ropes[i];
+    }
+    
     cout << fixed << setprecision(2) << "Max length: " << maxRopeLength(ropes, k) << "\n";
     return 0;
 }
+
+// Example input:
+// 4 11
+// 802
+// 743
+// 457
+// 539
 ```
 
 ## Key Takeaways

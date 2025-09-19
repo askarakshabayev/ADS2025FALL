@@ -12,6 +12,24 @@ ll gcd1(ll a, ll b) {
     return 1;
 }
 
+ll gcd2(ll a, ll b) {
+    if (b == 0) {
+        return a;
+    }
+    return gcd2(b, a % b);
+}
+
+ll gcd3(ll a, ll b) {
+    while (a > 0 && b > 0) {
+        if (a > b) {
+            a = a % b;
+        } else {
+            b = b % a;
+        }
+    }
+    return a + b;
+}
+
 int main() {
     ll a, b;
     cin >> a >> b;
