@@ -3,7 +3,7 @@
 
 using namespace std;
 
-int index_(vector<int> &a, int x) {
+int index_right(vector<int> &a, int x) {
     int l = -1, r = a.size(); 
     while (r > l + 1) {
         int mid = (l + r) / 2;
