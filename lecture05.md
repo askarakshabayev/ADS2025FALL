@@ -426,7 +426,7 @@ Extracting (sorted):
 11 12 22 25 34 64 90
 ```
 
-## Common Interview Questions
+## Common Questions
 
 ### Q1: Why is heapify O(log n)?
 **Answer:** At each step, we compare and potentially swap with one child, moving down one level. Since heap height is log n, maximum steps is log n.
