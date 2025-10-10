@@ -9,3 +9,4 @@
 | 3 | Binary Search | [Lecture 3 Notes](./lecture03.md) |
 | 4 | Binary Search Tree | [Lecture 4 Notes](./lecture04.md) |
 | 5 | Heap and Heap Sort | [Lecture 5 Notes](./lecture05.md) |
+| 6 | Quick Sort and Merge Sort | [Lecture 6 Notes](./lecture06.md) |
