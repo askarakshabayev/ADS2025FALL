@@ -293,54 +293,63 @@ int main() {
 
 ```cpp
 #include <iostream>
-#include <vector>
+
 using namespace std;
 
-// Partition function: places pivot in correct position
-// and places smaller elements to left, larger to right
-int partition(vector<int>& arr, int low, int high) {
-    int pivot = arr[high];  // Choose rightmost element as pivot
-    int i = low - 1;        // Index of smaller element
+int a[1000];
 
-    for (int j = low; j < high; j++) {
-        // If current element is smaller than or equal to pivot
-        if (arr[j] <= pivot) {
+void quick_sort(int l, int r) {
+    // Choose middle element as pivot
+    int p = a[(l + r) / 2];
+    int i = l;
+    int j = r;
+
+    // Partition the array
+    while (i < j) {
+        // Find element on left that should be on right
+        while (a[i] < p) i++;
+        // Find element on right that should be on left
+        while (a[j] > p) j--;
+
+        // Swap elements if needed
+        if (i <= j) {
+            swap(a[i], a[j]);
             i++;
-            swap(arr[i], arr[j]);
+            j--;
         }
     }
-    swap(arr[i + 1], arr[high]);
-    return i + 1;
-}
 
-// Main quick sort function
-void quickSort(vector<int>& arr, int low, int high) {
-    if (low < high) {
-        // pi is partitioning index, arr[pi] is now in right place
-        int pi = partition(arr, low, high);
-
-        // Recursively sort elements before and after partition
-        quickSort(arr, low, pi - 1);
-        quickSort(arr, pi + 1, high);
-    }
-}
-
-void printArray(vector<int>& arr) {
-    for (int num : arr)
-        cout << num << " ";
-    cout << endl;
+    // Recursively sort left partition
+    if (l < j)
+        quick_sort(l, j);
+    // Recursively sort right partition
+    if (i < r)
+        quick_sort(i, r);
 }
 
 int main() {
-    vector<int> arr = {10, 7, 8, 9, 1, 5};
+    int n;
+    cout << "Enter number of elements: ";
+    cin >> n;
+
+    cout << "Enter elements: ";
+    for (int i = 0; i < n; i++) {
+        cin >> a[i];
+    }
 
     cout << "Original array: ";
-    printArray(arr);
+    for (int i = 0; i < n; i++) {
+        cout << a[i] << " ";
+    }
+    cout << endl;
 
-    quickSort(arr, 0, arr.size() - 1);
+    quick_sort(0, n - 1);
 
     cout << "Sorted array:   ";
-    printArray(arr);
+    for (int i = 0; i < n; i++) {
+        cout << a[i] << " ";
+    }
+    cout << endl;
 
     return 0;
 }
