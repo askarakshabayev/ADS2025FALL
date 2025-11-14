@@ -187,25 +187,60 @@ A **connected acyclic graph**.
 
 ### 11. Bipartite Graph
 
-Vertices can be divided into **two sets** such that edges only connect vertices from different sets.
+Vertices can be divided into **two sets** such that edges only connect vertices from different sets. **No edges exist within the same set.**
 
 **Example:**
 ```
-Set 1: A, C
-Set 2: B, D
+Set 1          Set 2
 
-    A     B
-     \   / \
-      \ /   \
-       X     E
-      / \   /
-     /   \ /
-    C     D
+  0 ----------- 1
+   \           /
+    \         /
+     \       /
+      \     /
+       \   /
+        \ /
+         X
+        / \
+       /   \
+      /     \
+     /       \
+    /         \
+   /           \
+  2 ----------- 3
+
+Set 1: {0, 2}
+Set 2: {1, 3}
+
+Edges: (0,1), (0,3), (2,1), (2,3)
+
+Verification:
+- 0 connects to 1: Set 1 → Set 2 ✓
+- 0 connects to 3: Set 1 → Set 2 ✓
+- 2 connects to 1: Set 1 → Set 2 ✓
+- 2 connects to 3: Set 1 → Set 2 ✓
+- No edges within Set 1 (0 and 2 NOT connected) ✓
+- No edges within Set 2 (1 and 3 NOT connected) ✓
+
+This IS a bipartite graph!
+```
+
+**Non-Bipartite Example (Triangle):**
+```
+    0
+   / \
+  1---2
+
+This is NOT bipartite because:
+- If we put 0 in Set 1, then 1 and 2 must be in Set 2
+- But 1 and 2 are connected to each other
+- This violates the bipartite rule!
 ```
 
 **Applications:**
-- Matching problems
-- Job assignments
+- Matching problems (students to projects)
+- Job assignments (workers to tasks)
+- Task scheduling
 
 ## Graph Terminology
 
