@@ -14,3 +14,4 @@
 | 9 | Prefix Function and KMP Algorithm | [Lecture 9 Notes](./lecture09.md) |
 | 10 | Introduction to Graphs and BFS | [Lecture 10 Notes](./lecture10.md) |
 | 11 | Depth-First Search and Its Applications | [Lecture 11 Notes](./lecture11.md) |
+| 12 | Spanning Tree Algorithms (Kruskal and Prim) | [Lecture 12 Notes](./lecture12.md) |
