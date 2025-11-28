@@ -1,0 +1,195 @@
+# Lecture 13: Single-Source and All-Pairs Shortest Paths
+
+## Shortest Path Problem Overview
+Given a weighted graph \(G = (V, E)\) with edge weights \(w(u, v)\):
+- **Single-source shortest path (SSSP):** find the minimum-cost path from one source vertex \(s\) to all other vertices.
+- **All-pairs shortest path (APSP):** find the minimum-cost path between every pair of vertices.
+- Negative-weight edges are allowed in some algorithms, but negative cycles make shortest paths undefined.
+
+---
+
+## Dijkstra's Algorithm (Non-Negative Weights)
+**Goal:** Single-source shortest paths when all edge weights are non-negative.
+
+### Idea
+Repeatedly pick the unvisited vertex with the smallest current distance, then relax all outgoing edges. This is the straightforward \(O(V^2)\) version that is easy to read and matches the classical exposition.
+
+### Steps
+1. Initialize `dist[v] = INF` for all vertices and mark all as unvisited; set `dist[s] = 0`.
+2. Repeat `n` times:
+   - Choose the unvisited vertex `v` with the smallest `dist[v]`; if it is unreachable (`INF`), stop.
+   - Mark `v` visited.
+   - For every edge `(v, to, w)`, if `dist[v] + w < dist[to]`, update `dist[to]` and record `p[to] = v` for path reconstruction.
+3. After processing, `dist` holds shortest distances from `s`.
+
+### Complexity
+- With a simple linear scan for the next vertex: \(O(V^2 + E)\), often shown for clarity or dense graphs.
+
+### Use Cases
+- Routing with non-negative costs (road networks, network latency).
+- As a subroutine in A* search (with heuristics).
+
+### C++ Implementation (Straightforward Version)
+Selects the next vertex with a linear scan instead of priority queues or sets.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int INF = 1000000000;
+
+int main() {
+    int n, m, s; // vertices are 0..n-1
+    cin >> n >> m >> s;
+    vector<vector<pair<int, int>>> g(n);
+    for (int i = 0; i < m; i++) {
+        int u, v, w; cin >> u >> v >> w;
+        g[u].push_back({v, w});
+        // add g[v].push_back({u, w}); for an undirected graph
+    }
+
+    vector<int> d(n, INF), p(n, -1);
+    vector<char> used(n, false);
+    d[s] = 0;
+
+    for (int i = 0; i < n; ++i) {
+        int v = -1;
+        for (int j = 0; j < n; ++j)
+            if (!used[j] && (v == -1 || d[j] < d[v]))
+                v = j;
+        if (v == -1 || d[v] == INF)
+            break;
+        used[v] = true;
+
+        for (auto [to, len] : g[v]) {
+            if (d[v] + len < d[to]) {
+                d[to] = d[v] + len;
+                p[to] = v;
+            }
+        }
+    }
+
+    // d now holds shortest paths from s; p stores the tree for reconstruction
+}
+```
+
+---
+
+## Bellman-Ford Algorithm (Handles Negative Weights)
+**Goal:** Single-source shortest paths that allow negative weights and detect negative cycles reachable from the source.
+
+### Idea
+Relax every edge \(V - 1\) times; if an edge can still be relaxed once more, a negative cycle exists.
+
+### Steps
+1. Initialize `dist[s] = 0`, others to `INF`.
+2. Repeat \(V - 1\) times:
+   - For each edge `(u, v, w)`, if `dist[u] + w < dist[v]`, update `dist[v]`.
+3. To detect negative cycles reachable from `s`, run one more relaxation pass; any improvement means a negative cycle.
+
+### Complexity
+- Time: \(O(V \cdot E)\).
+- Space: \(O(V)\).
+
+### Use Cases
+- Graphs with negative edges (currency arbitrage detection, balancing flows).
+- Preprocessing step before reweighting edges in Johnson's algorithm.
+
+### C++ Implementation (Edge List)
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Edge { int u, v, w; };
+
+int main() {
+    const long long INF = 4e18;
+    int n, m, s; // vertices 0..n-1
+    cin >> n >> m >> s;
+    vector<Edge> edges(m);
+    for (auto &e : edges) cin >> e.u >> e.v >> e.w;
+
+    vector<long long> dist(n, INF);
+    dist[s] = 0;
+
+    for (int i = 0; i < n - 1; i++) {
+        bool changed = false;
+        for (auto [u, v, w] : edges) {
+            if (dist[u] != INF && dist[u] + w < dist[v]) {
+                dist[v] = dist[u] + w;
+                changed = true;
+            }
+        }
+        if (!changed) break; // early exit if no updates
+    }
+
+    bool has_neg_cycle = false;
+    for (auto [u, v, w] : edges) {
+        if (dist[u] != INF && dist[u] + w < dist[v]) {
+            has_neg_cycle = true;
+            break;
+        }
+    }
+
+    // dist holds shortest paths unless a reachable negative cycle exists
+}
+```
+
+---
+
+## Floyd–Warshall Algorithm (All-Pairs Shortest Paths)
+**Goal:** Compute shortest paths between all pairs of vertices; supports negative edges but not negative cycles.
+
+### Idea
+Dynamic programming over intermediate vertices: after processing vertices \(0..k\), `dist[i][j]` stores the shortest path from `i` to `j` using only those intermediates.
+
+### Steps
+1. Initialize `dist[i][j]` with edge weights (\(\infty\) if no edge), and `dist[i][i] = 0`.
+2. For each intermediate vertex `k` from 0 to \(V-1\):
+   - For each pair `(i, j)`, set `dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])`.
+3. After the loops, `dist` holds all-pairs shortest-path distances. Negative cycles can be detected if any `dist[i][i] < 0`.
+
+### Complexity
+- Time: \(O(V^3)\).
+- Space: \(O(V^2)\).
+
+### Use Cases
+- Dense graphs where \(V^3\) is acceptable.
+- Computing transitive closure (replace sums with boolean OR/AND).
+- Building routing tables or minimum distances in DP over subsets (e.g., TSP optimizations).
+
+### C++ Implementation (Adjacency Matrix)
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    const long long INF = 4e18;
+    int n; // vertices 0..n-1
+    cin >> n;
+    vector<vector<long long>> dist(n, vector<long long>(n, INF));
+
+    for (int i = 0; i < n; i++) dist[i][i] = 0;
+    int m; cin >> m;
+    for (int i = 0; i < m; i++) {
+        int u, v, w; cin >> u >> v >> w;
+        dist[u][v] = min(dist[u][v], 1LL * w); // handle multi-edges
+    }
+
+    for (int k = 0; k < n; k++)
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++)
+                if (dist[i][k] + dist[k][j] < dist[i][j])
+                    dist[i][j] = dist[i][k] + dist[k][j];
+
+    // dist[i][j] now holds APSP results
+}
+```
+
+---
+
+## Choosing the Right Algorithm
+- **Dijkstra:** Fast for non-negative weights and large sparse graphs.
+- **Bellman-Ford:** Works with negative weights and detects negative cycles but is slower.
+- **Floyd–Warshall:** All-pairs results for dense graphs; easy to adapt for path reconstruction or transitive closure.
+
