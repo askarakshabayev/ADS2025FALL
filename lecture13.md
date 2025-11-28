@@ -167,6 +167,33 @@ int main() {
 
 ---
 
+### Visual Walkthrough (Negative Edges Allowed)
+We use a 4-vertex directed graph with a negative edge but no negative cycles. Source is `0`.
+
+```
+      (4)
+ 0 --------> 1
+ |           ^ \
+ |(5)        |  \ (1)
+ v           |   v
+ 2 --------> 3 --+ 
+      (-2)
+```
+
+**Initialization**: `dist = [0, INF, INF, INF]`.
+
+**Iteration (up to V-1 = 3 passes)** — relax every edge each pass:
+
+| Pass | Edge relaxed | Change | dist after pass |
+| --- | --- | --- | --- |
+| 1 | `0→1 (+4)`, `0→2 (+5)`, `2→3 (-2)`, `3→1 (+1)` | `dist[1]` improves twice (`∞→4→3`), `dist[2]=5`, `dist[3]=3` | `[0, 3, 5, 3]` |
+| 2 | same edges | No distances improve | `[0, 3, 5, 3]` |
+| 3 | same edges | No distances improve | `[0, 3, 5, 3]` |
+
+Because the third pass makes no changes, the algorithm could stop early. A fourth (cycle-detection) pass would find no improvements, confirming there is no reachable negative cycle.
+
+---
+
 ## Floyd–Warshall Algorithm (All-Pairs Shortest Paths)
 **Goal:** Compute shortest paths between all pairs of vertices; supports negative edges but not negative cycles.
 
@@ -215,6 +242,42 @@ int main() {
     // dist[i][j] now holds APSP results
 }
 ```
+
+---
+
+### Visual Walkthrough (All-Pairs Updates)
+Consider three vertices with the weighted directed edges shown; `INF` means no direct edge. The initial distance matrix is built from the edges and zeros on the diagonal.
+
+```
+0 --(3)--> 1
+ \        ^
+ (8)\     |(1)
+     v    |
+      2 --+
+```
+
+Initial `dist`:
+
+|   | 0 | 1 | 2 |
+| - | - | - | - |
+| 0 | 0 | 3 | 8 |
+| 1 | INF | 0 | 1 |
+| 2 | INF | INF | 0 |
+
+Run Floyd–Warshall for `k = 0, 1, 2` (intermediate vertices):
+
+- **k = 0**: Update paths that go through vertex 0. No improvements for this graph.
+- **k = 1**: Path `0 → 1 → 2` improves `dist[0][2]` from 8 to `3 + 1 = 4`. Matrix becomes:
+
+  |   | 0 | 1 | 2 |
+  | - | - | - | - |
+  | 0 | 0 | 3 | 4 |
+  | 1 | INF | 0 | 1 |
+  | 2 | INF | INF | 0 |
+
+- **k = 2**: No further updates; the matrix above is final. If any `dist[i][i]` became negative, that would indicate a negative cycle.
+
+This table-based update view shows how each intermediate vertex can tighten paths between every pair.
 
 ---
 
