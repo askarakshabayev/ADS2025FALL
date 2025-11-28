@@ -75,6 +75,36 @@ int main() {
 
 ---
 
+### Visual Walkthrough on a Small Graph
+Below is a 5-vertex directed graph with non-negative weights. We run Dijkstra from source `0`.
+
+```
+      (2)         (2)
+ 0 --------> 1 --------> 3
+ |           \          |
+ |(5)         \(1)      |(1)
+ v             v         v
+ 2 ----------> 3 ------> 4
+       (3)
+```
+
+**Initialization**
+- `dist = [0, INF, INF, INF, INF]`, `used = [F, F, F, F, F]`.
+
+**Iteration details** (select the unused vertex with the smallest distance, then relax its edges):
+
+| Step | Picked vertex | Relaxations performed | Updated `dist` |
+| --- | --- | --- | --- |
+| 1 | `0` (dist = 0) | `(0→1, +2)`, `(0→2, +5)` | `[0, 2, 5, INF, INF]` |
+| 2 | `1` (dist = 2) | `(1→3, +2)`, `(1→2, +1)` | `[0, 2, 3, 4, INF]` (better path to `2`) |
+| 3 | `2` (dist = 3) | `(2→3, +3)` | `[0, 2, 3, 4, INF]` (no improvement vs. 4) |
+| 4 | `3` (dist = 4) | `(3→4, +1)` | `[0, 2, 3, 4, 5]` |
+| 5 | `4` (dist = 5) | No outgoing edges | `[0, 2, 3, 4, 5]` |
+
+All vertices become visited, and the final distances `[0, 2, 3, 4, 5]` match the shortest paths from `0`.
+
+---
+
 ## Bellman-Ford Algorithm (Handles Negative Weights)
 **Goal:** Single-source shortest paths that allow negative weights and detect negative cycles reachable from the source.
 
