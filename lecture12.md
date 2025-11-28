@@ -9,17 +9,21 @@ Given a connected, undirected, weighted graph \(G = (V, E)\), a **spanning tree*
 
 A **minimum spanning tree (MST)** is the spanning tree with the smallest possible total edge weight. MSTs are used in network design (roads, cables), clustering, image segmentation, and approximations for hard optimization problems.
 
-### Example Graph
+### Example Graph (n = 6, m = 9)
+Input format: `n m` followed by lines `x y w` (1-indexed vertices).
 ```
-   (1)    4      (2)
- A ----- B ----- C
-  \3   2 |     6/
-   \    |5    /
-    \   |   /
-      D --- E
-        1
+6 9
+1 2 1
+1 3 5
+1 4 8
+1 5 3
+2 4 9
+2 5 1
+2 6 2
+3 4 4
+5 6 6
 ```
-Possible MST edges: AB(1), AD(3), BD(2), CE(6) with total cost 12.
+MST edges (weight): (1,2,1), (2,5,1), (2,6,2), (3,4,4), (1,3,5) with total cost 13.
 
 ## Key Properties of MSTs
 - An MST has exactly \(|V| - 1\) edges and no cycles.
@@ -44,7 +48,7 @@ Sort edges by weight and add them one by one, skipping edges that would create a
 - DSU operations: almost \(O(1)\) (inverse Ackermann) per operation
 - Total: \(O(E \log E)\)
 
-### C++ Implementation (DSU + Kruskal)
+### C++ Implementation (input-driven Kruskal)
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -74,10 +78,15 @@ struct Edge {
 };
 
 int main() {
-    int n = 5; // vertices 0..4
-    vector<Edge> edges = {
-        {0, 1, 1}, {0, 3, 3}, {1, 3, 2}, {1, 2, 4}, {1, 4, 5}, {3, 4, 1}, {2, 4, 6}
-    };
+    int n, m;
+    cin >> n >> m;
+    vector<Edge> edges;
+    edges.reserve(m);
+    for (int i = 0; i < m; i++) {
+        int x, y, w;
+        cin >> x >> y >> w;
+        edges.push_back({x - 1, y - 1, w});
+    }
 
     sort(edges.begin(), edges.end());
     DSU dsu(n);
@@ -95,96 +104,96 @@ int main() {
 
     cout << "MST cost: " << mst_cost << "\nEdges:\n";
     for (auto &e : mst) {
-        cout << e.u << " - " << e.v << " (" << e.w << ")\n";
+        cout << e.u + 1 << " - " << e.v + 1 << " (" << e.w << ")\n";
     }
     return 0;
 }
 ```
 
 ### Kruskal Walkthrough
-Edges sorted: (0,1,1), (3,4,1), (1,3,2), (0,3,3), (1,2,4), (1,4,5), (2,4,6)
+Edges sorted: (1,2,1), (2,5,1), (2,6,2), (1,5,3), (3,4,4), (1,3,5), (5,6,6), (1,4,8), (2,4,9)
 ```
-Start: sets {0}, {1}, {2}, {3}, {4}
-Add (0,1,1): merge {0},{1}
-Add (3,4,1): merge {3},{4}
-Add (1,3,2): merge {0,1} with {3,4} -> {0,1,3,4}
-Skip (0,3,3): would create cycle
-Add (1,2,4): merge {0,1,3,4} with {2} -> {0,1,2,3,4}
-MST edges: (0,1), (3,4), (1,3), (1,2) with total cost 1+1+2+4 = 8
+Start: sets {1}, {2}, {3}, {4}, {5}, {6}
+Add (1,2,1): merge {1},{2}
+Add (2,5,1): merge {1,2} with {5}
+Add (2,6,2): merge {1,2,5} with {6}
+Skip (1,5,3): would create cycle
+Add (3,4,4): merge {3},{4}
+Add (1,3,5): merge {1,2,5,6} with {3,4}
+MST edges: (1,2), (2,5), (2,6), (3,4), (1,3) with total cost 13
 ```
 
 ## Prim's Algorithm
 
 ### Idea
-Grow the MST from an arbitrary start vertex by repeatedly picking the minimum weight edge that connects the current tree to a new vertex. A min-heap (priority queue) selects the next cheapest edge.
+Grow the MST from an arbitrary start vertex by repeatedly picking the minimum weight edge that connects the current tree to a new vertex. Below is the dense \(O(V^2)\) version (scan all vertices to find the next minimum key). A min-heap version improves to \(O(E \log V)\).
 
-### Steps (heap-based)
-1. Choose a start vertex `s`; push (0, s) into min-heap.
-2. While heap not empty:
-   - Pop the edge with minimum weight to vertex `v`.
-   - If `v` is already in the tree, skip it.
-   - Add `v` to the tree; add its edge weight to total cost.
-   - For each neighbor `(to, w)` of `v`, push `(w, to)` into heap if `to` not yet in tree.
-3. Stop when all vertices are included.
+### Steps (dense \(O(V^2)\))
+1. Set `key[start] = 0`, others to infinity.
+2. Repeat `n` times:
+   - Pick unused vertex `v` with smallest `key[v]`.
+   - Mark `v` used; for each neighbor `(to, w)`, if `w < key[to]`, update `key[to]` and record parent.
+3. Keys of chosen edges and parents describe the MST.
 
 ### Complexity
-- Using adjacency list + binary heap: \(O(E \log V)\)
-- Using adjacency matrix (no heap): \(O(V^2)\)
+- Dense scan (below): \(O(V^2)\)
+- With a binary heap: \(O(E \log V)\)
 
-### C++ Implementation (Priority Queue Prim)
+### C++ Implementation (dense Prim on example input)
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
 
 int main() {
-    int n = 5; // vertices 0..4
-    vector<vector<pair<int,int>>> g(n);
-    auto add_edge = [&](int u, int v, int w) {
-        g[u].push_back({v, w});
-        g[v].push_back({u, w});
-    };
+    int n, m;
+    cin >> n >> m;
+    vector<vector<pair<int, int>>> g(n);
+    for (int i = 0; i < m; i++) {
+        int x, y, w;
+        cin >> x >> y >> w;
+        --x; --y;
+        g[x].push_back({y, w});
+        g[y].push_back({x, w});
+    }
 
-    add_edge(0, 1, 1);
-    add_edge(0, 3, 3);
-    add_edge(1, 3, 2);
-    add_edge(1, 2, 4);
-    add_edge(1, 4, 5);
-    add_edge(3, 4, 1);
-    add_edge(2, 4, 6);
+    const int INF = 1e9;
+    vector<int> key(n, INF), parent(n, -1), used(n, 0);
 
-    vector<bool> in_mst(n, false);
-    priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> pq;
-
-    int start = 0;
-    pq.push({0, start});
-    int total = 0, chosen = 0;
-
-    while (!pq.empty() && chosen < n) {
-        auto [w, v] = pq.top(); pq.pop();
-        if (in_mst[v]) continue;
-        in_mst[v] = true;
-        total += w;
-        chosen++;
-
-        for (auto [to, cost] : g[v]) {
-            if (!in_mst[to]) pq.push({cost, to});
+    key[0] = 0; // start from vertex 0
+    for (int i = 0; i < n; i++) {
+        int v = -1;
+        for (int j = 0; j < n; j++) {
+            if (!used[j] && (v == -1 || key[j] < key[v])) v = j;
+        }
+        used[v] = 1;
+        for (auto [to, w] : g[v]) {
+            if (!used[to] && w < key[to]) {
+                key[to] = w;
+                parent[to] = v;
+            }
         }
     }
 
-    cout << "MST cost: " << total << "\n";
+    int total = 0;
+    for (int w : key) total += w;
+
+    cout << "MST cost: " << total << "\nEdges:\n";
+    for (int v = 1; v < n; v++) {
+        cout << parent[v] + 1 << " - " << v + 1 << " (" << key[v] << ")\n";
+    }
     return 0;
 }
 ```
 
-### Prim Walkthrough (same graph)
+### Prim Walkthrough (example graph)
 ```
-Start at 0: heap = (0,0)
-Pop (0,0): add 0, push edges (0,1,1), (0,3,3)
-Pop (1,1): add 1, push (1,3,2), (1,2,4), (1,4,5)
-Pop (2,3): add 3, push (3,4,1)
-Pop (1,4): add 4, push (4,2,6)
-Pop (4,2): add 2
-Tree built with cost 0+1+2+1+4 = 8 (same as Kruskal)
+Start at 1 (vertex 0 internally): candidate edges (1,2,1), (1,3,5), (1,4,8), (1,5,3)
+Pick 2 via (1,2,1); update candidates with edges from 2: (2,5,1), (2,6,2)
+Pick 5 via (2,5,1); update edge to 6 remains weight 2
+Pick 6 via (2,6,2)
+Pick 3 via (1,3,5); update 3->4 edge weight 4
+Pick 4 via (3,4,4)
+MST edges: (1,2), (2,5), (2,6), (1,3), (3,4) with total cost 13
 ```
 
 ## Kruskal vs Prim
