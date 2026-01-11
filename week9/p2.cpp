@@ -19,7 +19,7 @@ vector<int> prefix_function(string s) {
                 }
             }
             if (match)
-                p[i] = len;
+                pi[i] = len;
         }
     }
 }
